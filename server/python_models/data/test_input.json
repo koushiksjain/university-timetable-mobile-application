@@ -1,0 +1,39 @@
+# python_models/data/test_input.json
+{
+  "courses": [
+    {
+      "id": "CS101",
+      "name": "Introduction to Computer Science",
+      "type": "lecture",
+      "duration": 2,
+      "required_equipment": ["projector"],
+      "teacher_ids": ["T001"],
+      "student_group_ids": ["G01", "G02"]
+    }
+  ],
+  "teachers": [
+    {
+      "id": "T001",
+      "name": "Dr. Smith",
+      "availability": ["Mon:9-11", "Wed:14-16"]
+    }
+  ],
+  "classrooms": [
+    {
+      "id": "R101",
+      "capacity": 50,
+      "equipment": ["projector", "whiteboard"]
+    }
+  ],
+  "student_groups": [
+    {
+      "id": "G01",
+      "size": 25,
+      "program": "CS"
+    }
+  ],
+  "constraints": {
+    "max_daily_hours": 6,
+    "min_gap_between_classes": 1
+  }
+}

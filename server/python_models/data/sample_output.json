@@ -1,0 +1,18 @@
+{
+  "schedule": [
+    {
+      "course_id": "CS101",
+      "teacher_id": "T001",
+      "classroom_id": "R101",
+      "student_group_ids": ["G01", "G02"],
+      "day": "Mon",
+      "start_time": "9:00",
+      "end_time": "11:00"
+    }
+  ],
+  "statistics": {
+    "utilization": 0.85,
+    "conflicts": 0,
+    "unassigned": 0
+  }
+}
