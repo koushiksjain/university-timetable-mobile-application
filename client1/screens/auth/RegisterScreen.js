@@ -22,6 +22,20 @@ const registerSchema = yup.object().shape({
     .oneOf([yup.ref('password'), null], 'Passwords must match')
     .required('Please confirm your password'),
   role: yup.string().required('Please select your role'),
+  usn: yup.string().when('role', {
+    is: 'student',
+    then: yup.string()
+      .matches(/^[0-9][A-Za-z]{2}[0-9]{2}[A-Za-z]{2}[0-9]{3}$/, 'Invalid USN format')
+      .required('USN is required for students'),
+    otherwise: yup.string().notRequired()
+  }),
+  phone: yup.string().when('role', {
+    is: 'teacher',
+    then: yup.string()
+      .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
+      .required('Phone number is required for teachers'),
+    otherwise: yup.string().notRequired()
+  }),
 });
 
 const RegisterScreen = ({ navigation }) => {
@@ -88,6 +102,8 @@ const RegisterScreen = ({ navigation }) => {
             password: '',
             confirmPassword: '',
             role: '',
+            usn: '',
+            phone: '',
           }}
           validationSchema={registerSchema}
           onSubmit={handleRegister}
@@ -170,11 +186,46 @@ const RegisterScreen = ({ navigation }) => {
                     )}
                   </View>
 
+                  {values.role === 'student' && (
+                    <InputField
+                      label="USN"
+                      value={values.usn}
+                      onChangeText={handleChange('usn')}
+                      onBlur={handleBlur('usn')}
+                      error={touched.usn && errors.usn}
+                      icon="numeric"
+                      autoCapitalize="characters"
+                      style={styles.input}
+                    />
+                  )}
+
+                  {values.role === 'teacher' && (
+                    <InputField
+                      label="Phone Number"
+                      value={values.phone}
+                      onChangeText={handleChange('phone')}
+                      onBlur={handleBlur('phone')}
+                      error={touched.phone && errors.phone}
+                      keyboardType="phone-pad"
+                      icon="phone"
+                    
+                      style={styles.input}
+                    />
+                  )}
+
                   <Button 
                     title="Continue" 
                     onPress={nextStep} 
                     style={styles.button} 
-                    disabled={!values.name || !values.email || !values.role || errors.name || errors.email}
+                    disabled={
+                      !values.name || 
+                      !values.email || 
+                      !values.role || 
+                      errors.name || 
+                      errors.email ||
+                      (values.role === 'student' && (!values.usn || errors.usn)) ||
+                      (values.role === 'teacher' && (!values.phone || errors.phone))
+                    }
                   />
                 </>
               ) : (
@@ -248,8 +299,6 @@ const RegisterScreen = ({ navigation }) => {
     </View>
   );
 };
-
-// ... existing imports ...
 
 const styles = StyleSheet.create({
   container: {
@@ -349,8 +398,8 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     backgroundColor: '#FFFFFF',
     transform: [{ translateX: -4 }, { translateY: -4 }],
-    justifyContent: 'center', // Add this
-    alignItems: 'center', // Add this
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   primaryStepButton: {
     backgroundColor: '#FFD700',
@@ -359,8 +408,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     textAlign: 'center',
-    // // color: 'black',
-    // backgroundColor: 'red', // Temporary debug
   },
   footer: {
     flexDirection: 'row',
