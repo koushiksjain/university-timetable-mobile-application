@@ -1,6 +1,6 @@
 // services/email.service.js
 const nodemailer = require('nodemailer');
-const logger = require('../utils/logger');
+const {logger} = require('../utils/logger');
 const authConfig = require('../config/auth');
 
 // Create transporter (configure with your email service)

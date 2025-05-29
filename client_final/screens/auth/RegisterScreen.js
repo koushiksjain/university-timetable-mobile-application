@@ -24,17 +24,16 @@ const registerSchema = yup.object().shape({
   role: yup.string().required('Please select your role'),
   usn: yup.string().when('role', {
     is: 'student',
-    then: yup.string()
+    then: (schema) => schema
       .matches(/^[0-9][A-Za-z]{2}[0-9]{2}[A-Za-z]{2}[0-9]{3}$/, 'Invalid USN format')
       .required('USN is required for students'),
-    otherwise: yup.string().notRequired()
+    otherwise: (schema) => schema.notRequired()
   }),
   phone: yup.string().when('role', {
     is: 'teacher',
-    then: yup.string()
-      .matches(/^[0-9]{10}$/, 'Phone number must be 10 digits')
-      .required('Phone number is required for teachers'),
-    otherwise: yup.string().notRequired()
+    then: (schema) => schema
+      .required('Please fill you phone number'),
+    otherwise: (schema) => schema.notRequired()
   }),
 });
 
@@ -67,14 +66,34 @@ const RegisterScreen = ({ navigation }) => {
     ]).start();
   }, []);
 
-  const handleRegister = (values) => {
-    setLoading(true);
-    // Simulate registration API call
-    setTimeout(() => {
-      setLoading(false);
-      navigation.navigate('EmailVerification', { email: values.email });
-    }, 2000);
-  };
+const handleRegister = async (values) => {
+  setLoading(true);
+
+  try {
+    const response = await fetch('http://172.16.0.48:3000/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(values),
+    });
+    console.log(values)
+    const data = await response.json();
+
+    if (response.ok) {
+      // Success: navigate to Email Verification or Home
+      alert(data.message || 'Registration Successfull');
+    } else {
+      // Handle server-side errors
+      alert(data.message || 'Registration failed');
+    }
+  } catch (error) {
+    console.error('Error registering:', error);
+    alert('Failed to connect to the server');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const nextStep = () => {
     setStep(2);
@@ -220,7 +239,7 @@ const RegisterScreen = ({ navigation }) => {
                     disabled={
                       !values.name || 
                       !values.email || 
-                      !values.role || 
+                      !values.role ||
                       errors.name || 
                       errors.email ||
                       (values.role === 'student' && (!values.usn || errors.usn)) ||

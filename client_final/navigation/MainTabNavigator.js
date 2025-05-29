@@ -55,8 +55,8 @@ export default function MainTabNavigator() {
 
           if (route.name === 'Student' || route.name === 'Teacher' || route.name === 'Coordinator') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Notifications') {
-            iconName = focused ? 'bell' : 'bell-outline';
+          } else if (route.name === 'Announcements') {
+            iconName = focused ? 'bullhorn' : 'bullhorn-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'account' : 'account-outline';
           }

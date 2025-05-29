@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Animated, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../../config/theme';
 import Header from '../../components/common/Header';
 import Loader from '../../components/common/Loader';
 import  AvailabilityManager  from '../../components/teacher/AvailabilityManager';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get('window');
 
@@ -14,52 +15,91 @@ const ScheduleScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
+  const [scheduleData, setscheduleData] = useState([]);
+
+  useEffect(() => {
+      handleRefresh();
+    }, []);
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      const userJson = await AsyncStorage.getItem("user");
+      if (!userJson) {
+        throw new Error("User not found in storage");
+      }
+
+      const user = JSON.parse(userJson);
+      const token = user.token;
+
+      const response = await fetch(
+        `http://172.16.0.48:3000/api/teacher/week_timetable`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include token here
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch timetable");
+      }
+
+      const data = await response.json();
+      setscheduleData(data.data); // Ensure backend sends `timetable` as key
+    } catch (error) {
+      console.error("Error fetching timetable:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Sample schedule data with days, time slots, and class details
-  const scheduleData = [
-    {
-      day: 'Monday',
-      classes: [
-        { time: '8:00-9:00', subject: 'Data Structures', room: 'CS-202', section: 'CS-A', type: 'Lecture' },
-        { time: '10:00-11:00', subject: 'Algorithms', room: 'CS-205', section: 'CS-A', type: 'Lecture' },
-        { time: '2:00-3:00', subject: 'Office Hours', room: 'CS-301', section: '', type: 'Office' },
-      ]
-    },
-    {
-      day: 'Tuesday',
-      classes: [
-        { time: '9:00-10:00', subject: 'Data Structures Lab', room: 'CS-210', section: 'CS-B', type: 'Lab' },
-        { time: '1:00-2:00', subject: 'Database Systems', room: 'CS-203', section: 'CS-A', type: 'Lecture' },
-      ]
-    },
-    {
-      day: 'Wednesday',
-      classes: [
-        { time: '10:00-11:00', subject: 'Algorithms', room: 'CS-205', section: 'CS-A', type: 'Lecture' },
-        { time: '3:00-4:00', subject: 'Research Meeting', room: 'CS-401', section: '', type: 'Meeting' },
-      ]
-    },
-    {
-      day: 'Thursday',
-      classes: [
-        { time: '11:00-12:00', subject: 'Department Meeting', room: 'CS-100', section: '', type: 'Meeting' },
-        { time: '2:00-3:00', subject: 'Computer Networks', room: 'CS-207', section: 'CS-B', type: 'Lecture' },
-      ]
-    },
-    {
-      day: 'Friday',
-      classes: [
-        { time: '9:00-10:00', subject: 'Data Structures', room: 'CS-202', section: 'CS-A', type: 'Lecture' },
-        { time: '2:00-3:00', subject: 'Office Hours', room: 'CS-301', section: '', type: 'Office' },
-      ]
-    },
-  ];
+  // const scheduleData = [
+  //   {
+  //     day: 'Monday',
+  //     classes: [
+  //       { time: '8:00-9:00', subject: 'Data Structures', room: 'CS-202', section: 'CS-A', type: 'Lecture' },
+  //       { time: '10:00-11:00', subject: 'Algorithms', room: 'CS-205', section: 'CS-A', type: 'Lecture' },
+  //       { time: '2:00-3:00', subject: 'Office Hours', room: 'CS-301', section: '', type: 'Office' },
+  //     ]
+  //   },
+  //   {
+  //     day: 'Tuesday',
+  //     classes: [
+  //       { time: '9:00-10:00', subject: 'Data Structures Lab', room: 'CS-210', section: 'CS-B', type: 'Lab' },
+  //       { time: '1:00-2:00', subject: 'Database Systems', room: 'CS-203', section: 'CS-A', type: 'Lecture' },
+  //     ]
+  //   },
+  //   {
+  //     day: 'Wednesday',
+  //     classes: [
+  //       { time: '10:00-11:00', subject: 'Algorithms', room: 'CS-205', section: 'CS-A', type: 'Lecture' },
+  //       { time: '3:00-4:00', subject: 'Research Meeting', room: 'CS-401', section: '', type: 'Meeting' },
+  //     ]
+  //   },
+  //   {
+  //     day: 'Thursday',
+  //     classes: [
+  //       { time: '11:00-12:00', subject: 'Department Meeting', room: 'CS-100', section: '', type: 'Meeting' },
+  //       { time: '2:00-3:00', subject: 'Computer Networks', room: 'CS-207', section: 'CS-B', type: 'Lecture' },
+  //     ]
+  //   },
+  //   {
+  //     day: 'Friday',
+  //     classes: [
+  //       { time: '9:00-10:00', subject: 'Data Structures', room: 'CS-202', section: 'CS-A', type: 'Lecture' },
+  //       { time: '2:00-3:00', subject: 'Office Hours', room: 'CS-301', section: '', type: 'Office' },
+  //     ]
+  //   },
+  // ];
+
 
   // Time slots for the timetable
   const timeSlots = [
-    '8:00-9:00', '9:00-10:00', '10:00-11:00', '11:00-12:00',
-    '12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00',
-    '16:00-17:00', '17:00-18:00'
+    '8:40-9:40','9:40-10:40','11:00-12:00','12:00-1:00','1:00-1:40','1:40-2:40','2:40-3:40', '3:40-4:40'
   ];
 
   // Helper function to get class for a specific day and time
@@ -91,7 +131,7 @@ const ScheduleScreen = ({ navigation }) => {
               {classInfo.subject}
             </Text>
             <Text style={[styles.detailText, { color: theme.colors.placeholder }]}>
-              {classInfo.room}
+              CODE - {classInfo.room}
             </Text>
             {classInfo.section && (
               <Text style={[styles.detailText, { color: theme.colors.placeholder }]}>
@@ -114,12 +154,6 @@ const ScheduleScreen = ({ navigation }) => {
     'Friday': ['3:00-4:00'],
   });
 
-  const handleRefresh = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  };
 
   const handleEditToggle = () => {
     setEditing(!editing);
@@ -170,7 +204,7 @@ const ScheduleScreen = ({ navigation }) => {
             Schedule
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[
             styles.tab,
             { 
@@ -199,7 +233,7 @@ const ScheduleScreen = ({ navigation }) => {
           >
             Availability
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <ScrollView // Ensure ScrollView wraps the content
         contentContainerStyle={styles.content}
@@ -332,7 +366,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   dayHeader: {
-    width: 120,
+    width: 180,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
@@ -367,7 +401,7 @@ const styles = StyleSheet.create({
     color: '#000000',
   },
   timetableCell: {
-    width: 120,
+    width: 180,
     padding: 8,
     justifyContent: 'center',
     borderRightWidth: 3,

@@ -61,7 +61,7 @@ export default function TeacherStack() {
       <Stack.Screen 
         name="Schedule" 
         component={ScheduleScreen} 
-        options={{ title: 'My Schedule' }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen 
         name="ClassDetails" 

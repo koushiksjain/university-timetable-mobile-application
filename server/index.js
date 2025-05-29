@@ -25,27 +25,21 @@ const studentRoutes = require('./routes/student.routes');
 const teacherRoutes = require('./routes/teacher.routes');
 
 // Import services
-const { validatePythonEnvironment } = require('./services/timetable/pythonExecutor.service');
+// const { validatePythonEnvironment } = require('./services/timetable/pythonExecutor.service');
 const { logger, morganStream } = require('./utils/logger');
 
 // Initialize Express app
 const app = express();
 
 // Database connection
-mongoose.connect(dbConfig.mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000
-})
-.then(() => logger.info('MongoDB connected successfully'))
-.catch(err => logger.error('MongoDB connection error:', err));
+dbConfig();
 
 // Middleware
 app.use(helmet());
 app.use(cors({
   origin: [
-    'http://localhost:19006',
-    'exp://your-expo-app-url',
+    'http://172.16.0.48:8081',
+    'exp://172.16.0.48:8081',
     process.env.FRONTEND_PROD_URL
   ].filter(Boolean),
   credentials: true
@@ -88,9 +82,9 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Python environment validation (on startup)
-validatePythonEnvironment()
-  .then(() => logger.info('Python environment validated successfully'))
-  .catch(err => logger.error('Python environment validation failed:', err.message));
+// validatePythonEnvironment()
+//   .then(() => logger.info('Python environment validated successfully'))
+//   .catch(err => logger.error('Python environment validation failed:', err.message));
 
 // Server startup
 const PORT = process.env.PORT || 3000;

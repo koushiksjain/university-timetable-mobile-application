@@ -6,25 +6,23 @@ import Card from '../common/Card';
 import Button from '../common/Button';
 
 const { width } = Dimensions.get('window');
-const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const timeSlots = [
-  '08:00 - 09:00',
-  '09:00 - 10:00',
-  '10:00 - 11:00',
+  '08:40 - 09:40',
+  '09:40 - 10:40',
   '11:00 - 12:00',
   '12:00 - 13:00',
-  '13:00 - 14:00',
-  '14:00 - 15:00',
-  '15:00 - 16:00',
-  '16:00 - 17:00',
-  '17:00 - 18:00',
+  '13:00 - 13:40',
+  '13:40 - 14:40',
+  '14:40 - 15:40',
+  '15:40 - 16:40',
 ];
 
 const TimetableDisplay = ({ timetableData }) => {
   const theme = useTheme();
   const [zoomLevel, setZoomLevel] = useState(1);
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const [selectedClass, setSelectedClass] = useState(null);
+  // const [selectedClass, setSelectedClass] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const handleZoomIn = () => {
@@ -47,22 +45,22 @@ const TimetableDisplay = ({ timetableData }) => {
     }
   };
 
-  const handleClassSelect = (classInfo) => {
-    setSelectedClass(classInfo);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  };
+  // const handleClassSelect = (classInfo) => {
+  //   setSelectedClass(classInfo);
+  //   Animated.timing(fadeAnim, {
+  //     toValue: 1,
+  //     duration: 300,
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
 
-  const closeClassDetails = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => setSelectedClass(null));
-  };
+  // const closeClassDetails = () => {
+  //   Animated.timing(fadeAnim, {
+  //     toValue: 0,
+  //     duration: 200,
+  //     useNativeDriver: true,
+  //   }).start(() => setSelectedClass(null));
+  // };
 
   const renderTimetable = () => {
     return (
@@ -101,7 +99,7 @@ const TimetableDisplay = ({ timetableData }) => {
                   return (
                     <TouchableOpacity
                       key={`${day}-${time}`}
-                      onPress={() => !isEmpty && handleClassSelect(classInfo)}
+                      // onPress={() => !isEmpty && handleClassSelect(classInfo)}
                       style={[
                         styles.classCell,
                         {
@@ -166,7 +164,7 @@ const TimetableDisplay = ({ timetableData }) => {
         {renderTimetable()}
 
         {/* Class Details Modal */}
-        {selectedClass && (
+        {/* {selectedClass && (
           <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
             <Card style={styles.modalContent}>
               <TouchableOpacity
@@ -228,7 +226,7 @@ const TimetableDisplay = ({ timetableData }) => {
               />
             </Card>
           </Animated.View>
-        )}
+        )} */}
       </View>
     </ScrollView>
   );

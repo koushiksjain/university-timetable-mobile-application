@@ -19,11 +19,7 @@ const UserSchema = new mongoose.Schema({
     enum: ['student', 'teacher', 'coordinator', 'admin'],
     required: true
   },
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
+  name: {
     type: String,
     required: true
   },
@@ -37,9 +33,6 @@ const UserSchema = new mongoose.Schema({
   lastLogin: {
     type: Date
   },
-  profilePicture: {
-    type: String
-  }
 }, {
   timestamps: true,
   discriminatorKey: 'role'

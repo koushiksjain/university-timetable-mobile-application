@@ -56,7 +56,7 @@ const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
   const colorScheme = useColorScheme();
   const theme = {
-    colors: colorScheme === 'dark' ? darkColors : lightColors, teacherStackColors,
+    colors: colorScheme === 'light' ? lightColors : lightColors, teacherStackColors,
     spacing: {
       small: 8,
       medium: 16,

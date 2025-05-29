@@ -1,14 +1,12 @@
 // config/db.js
 const mongoose = require('mongoose');
-const logger = require('../utils/logger');
+const {logger} = require('../utils/logger');
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/timetable_db', {
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-      maxPoolSize: 50, // Adjust based on your needs
     });
 
     logger.info(`MongoDB Connected: ${conn.connection.host}`);

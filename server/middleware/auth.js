@@ -1,7 +1,7 @@
 // middleware/auth.js
 const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth');
-const logger = require('../utils/logger');
+const {logger }= require('../utils/logger');
 const { ROLES } = require('../config/constants');
 const User = require('../models/User.model');
 

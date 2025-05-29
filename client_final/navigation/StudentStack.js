@@ -1,10 +1,10 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Dashboard from '../screens/student/Dashboard';
-import FreeTeachers from '../screens/student/FreeTeachers';
+// import FreeTeachers from '../screens/student/FreeTeachers';
 import TimetableScreen from '../screens/student/TimetableScreen';
-import ClassDetails from '../screens/student/ClassDetails';
-import BookAppointment from '../screens/student/BookAppointment';
+// import ClassDetails from '../screens/student/ClassDetails';
+// import BookAppointment from '../screens/student/BookAppointment';
 
 const Stack = createStackNavigator();
 
@@ -35,17 +35,17 @@ export default function StudentStack() {
         component={Dashboard} 
         options={{ headerShown: false }}
       />
-      <Stack.Screen 
+      {/* <Stack.Screen 
         name="FreeTeachers" 
         component={FreeTeachers} 
         options={{ title: 'Available Teachers' }}
-      />
+      /> */}
       <Stack.Screen 
         name="Timetable" 
         component={TimetableScreen} 
-        options={{ title: 'My Timetable' }}
+        options={{headerShown: false}}
       />
-      <Stack.Screen 
+      {/* <Stack.Screen 
         name="ClassDetails" 
         component={ClassDetails} 
         options={{ title: 'Class Details' }}
@@ -54,7 +54,7 @@ export default function StudentStack() {
         name="BookAppointment" 
         component={BookAppointment} 
         options={{ title: 'Book Appointment' }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }

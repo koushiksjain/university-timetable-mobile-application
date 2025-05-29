@@ -15,6 +15,7 @@ import Card from "../../components/common/Card";
 import Loader from "../../components/common/Loader";
 import { useAuth } from "../../context/AuthContext";
 
+
 const LoginScreen = ({ navigation }) => {
   const theme = useTheme();
   const { login } = useAuth();
@@ -25,6 +26,7 @@ const LoginScreen = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
+  
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -46,40 +48,49 @@ const LoginScreen = ({ navigation }) => {
   ];
 
   const handleLogin = async () => {
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const user = dummyUsers.find(
-        (u) => u.email === email && u.password === password
-      );
+  try {
+    const response = await fetch(`http://172.16.0.48:3000/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-      if (user) {
-        await login({
-          email: user.email,
-          role: user.role,
-          name: user.role.charAt(0).toUpperCase() + user.role.slice(1),
-        });
-      } else {
-        Alert.alert("Login Failed", "Invalid email or password", [
-          { text: "OK", onPress: () => setLoading(false) },
-        ]);
-        setLoading(false);
-      }
-    } catch (error) {
-      Alert.alert("Login Error", "An error occurred during login", [
+    const data = await response.json();
+    console.log(data)
+    if (response.ok) {
+      // Assuming the response returns user role and name
+      console.log(data.accessToken)
+      await login({
+        email: data.user.email, 
+        role: data.user.role,
+        name: data.user.name,
+        token: data.accessToken
+      });
+    } else {
+      Alert.alert("Login Failed", data.message || "Invalid email or password", [
         { text: "OK", onPress: () => setLoading(false) },
       ]);
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    Alert.alert("Login Error", "An error occurred during login", [
+      { text: "OK", onPress: () => setLoading(false) },
+    ]);
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const fillTestCredentials = (role) => {
-    const user = dummyUsers.find((u) => u.role === role);
-    if (user) {
-      setEmail(user.email);
-      setPassword(user.password);
-    }
-  };
+  // const fillTestCredentials = (role) => {
+  //   const user = dummyUsers.find((u) => u.role === role);
+  //   if (user) {
+  //     setEmail(user.email);
+  //     setPassword(user.password);
+  //   }
+  // };
 
   return (
     <View  style={styles.container}>
@@ -100,7 +111,7 @@ const LoginScreen = ({ navigation }) => {
             style={[styles.logo, { alignSelf: 'center' }]}
             resizeMode="contain"
           />
-          <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>
+          <Text style={[styles.subtitle, { color: theme.colors.primary }]}>
             Sign in to your account
           </Text>
 
@@ -138,29 +149,6 @@ const LoginScreen = ({ navigation }) => {
             style={styles.button}
             disabled={!email || !password}
           />
-
-          {/* <View style={styles.testButtons}>
-            <Text style={[styles.testText, { color: theme.colors.primary }]}>
-              Test Accounts:
-            </Text>
-            <View style={styles.testButtonRow}>
-              <Button
-                title="Student"
-                onPress={() => fillTestCredentials("student")}
-                type="outline"
-                style={styles.testButton}
-                textStyle={[styles.testButtonText, { color: "black" }]}
-              />
-              <Button
-                title="Teacher"
-                onPress={() => fillTestCredentials("teacher")}
-                type="outline"
-                style={styles.testButton}
-                textStyle={[styles.testButtonText, { color: "black" }]}
-              />
-            </View>
-          </View> */}
-
           <View style={styles.footer}>
             <Text
               style={[styles.footerText, { color: theme.colors.onPrimary }]}
@@ -203,9 +191,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "2%", // Center vertically
     left: "46%", // Center horizontally
-
-    // marginLeft: -30, // Half of the width to offset
-    // marginBottom: 100, // Half of the height to offset
   },
   content: {
     padding: 24,
@@ -237,6 +222,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 32,
     textAlign: "center",
+    marginTop: 10,
     marginBottom: 14,
     fontWeight: "600",
   },
@@ -249,7 +235,7 @@ const styles = StyleSheet.create({
   },
   forgotText: {
     textAlign: "right",
-    marginBottom: 25,
+    marginBottom: 15,
     fontSize: 14,
     fontWeight: "700",
     textDecorationLine: "underline",
@@ -262,9 +248,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFD700", // Bold yellow
     transform: [{ translateX: -4 }, { translateY: -4 }], // Offset button
   },
-  testButtons: {
-    marginVertical: 16,
-  },
+
   testText: {
     textAlign: "center",
     marginBottom: 8,

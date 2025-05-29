@@ -2,8 +2,9 @@
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User.model');
 const authConfig = require('../../config/auth');
-const logger = require('../../utils/logger');
+const {logger} = require('../../utils/logger');
 const { ROLES } = require('../../config/constants');
+const { token } = require('morgan');
 
 const login = async (req, res) => {
   try {
@@ -13,7 +14,8 @@ const login = async (req, res) => {
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       logger.warn(`Login attempt for non-existent email: ${email}`);
-      return res.status(401).json({ 
+      return res.status(401).json({
+        message : 'Invalid email or password', 
         success: false,
         error: 'Invalid email or password' 
       });
@@ -24,6 +26,7 @@ const login = async (req, res) => {
     if (!isMatch) {
       logger.warn(`Invalid password attempt for user: ${user._id}`);
       return res.status(401).json({ 
+        message: 'Invalid email or password',
         success: false,
         error: 'Invalid email or password' 
       });
@@ -33,6 +36,7 @@ const login = async (req, res) => {
     if (!user.isActive) {
       logger.warn(`Login attempt for inactive account: ${user._id}`);
       return res.status(403).json({ 
+        message: 'Account is inactive. Please contact admin.',
         success: false,
         error: 'Account is inactive. Please contact admin.' 
       });
@@ -58,18 +62,16 @@ const login = async (req, res) => {
       success: true,
       accessToken: tokens.accessToken,
       user: {
-        id: user._id,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
         role: user.role,
-        profilePicture: user.profilePicture
+        name: user.name
       }
     });
 
   } catch (error) {
     logger.error(`Login error: ${error.message}`);
     res.status(500).json({ 
+      message : 'Server error during login',
       success: false,
       error: 'Server error during login' 
     });

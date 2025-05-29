@@ -3,7 +3,7 @@ const User = require('../../models/User.model');
 const Timetable = require('../../models/Timetable.model');
 const Notification = require('../../models/Notification.model');
 const { ApiError } = require('../../middleware/errorHandler');
-const logger = require('../../utils/logger');
+const {logger} = require('../../utils/logger');
 const helpers = require('../../utils/helpers');
 
 const getDashboardData = async (req, res) => {

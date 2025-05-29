@@ -1,5 +1,5 @@
 // middleware/errorHandler.js
-const logger = require('../utils/logger');
+const {logger} = require('../utils/logger');
 const { ROLES } = require('../config/constants');
 
 // Custom error classes

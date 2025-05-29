@@ -1,11 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import DepartmentSetup from '../screens/coordinator/DepartmentSetup';
-import PreferencesScreen from '../screens/coordinator/PreferencesScreen';
-import TimetableGeneration from '../screens/coordinator/TimetableGeneration';
-import TimetableApproval from '../screens/coordinator/TimetableApproval';
-import TeacherDetails from '../screens/coordinator/TeacherDetails';
-import AddTeacher from '../screens/coordinator/AddTeacher';
+// import DepartmentSetup from '../screens/coordinator/DepartmentSetup';
+// import PreferencesScreen from '../screens/coordinator/PreferencesScreen';
+// import TimetableGeneration from '../screens/coordinator/TimetableGeneration';
+// import TimetableApproval from '../screens/coordinator/TimetableApproval';
+// import TeacherDetails from '../screens/coordinator/TeacherDetails';
+// import AddTeacher from '../screens/coordinator/AddTeacher';
 
 const Stack = createStackNavigator();
 

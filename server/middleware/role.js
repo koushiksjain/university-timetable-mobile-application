@@ -1,6 +1,6 @@
 // middleware/role.js
 const { ROLES } = require('../config/constants');
-const logger = require('../utils/logger');
+const {logger} = require('../utils/logger');
 
 // Higher-order function to create role check middleware
 const requireRole = (...allowedRoles) => {
@@ -35,7 +35,7 @@ const requireRole = (...allowedRoles) => {
         }
       }
 
-      logger.debug(`Role access granted: ${req.user.role} for ${req.originalUrl}`);
+      logger.info(`Role access granted: ${req.user.role} for ${req.originalUrl}`);
       next();
 
     } catch (error) {

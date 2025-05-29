@@ -2,20 +2,20 @@
 const User = require('../../models/User.model');
 const Student = require('../../models/Student.model');
 const Teacher = require('../../models/Teacher.model');
-const Coordinator = require('../../models/Coordinator.model');
-const Department = require('../../models/Department.model');
-const logger = require('../../utils/logger');
+const {logger} = require('../../utils/logger');
 const { ROLES } = require('../../config/constants');
 const emailService = require('../../services/email.service');
 
 const register = async (req, res) => {
+  console.log(req.body)
   try {
-    const { email, password, firstName, lastName, phone, role, department, semester, usn, section } = req.body;
-
+    
+    const { name, email, password, confirmPassword, role, usn, phone} = req.body;
     // 1. Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
+        message: "Email already exists",
         success: false,
         error: 'Email already exists'
       });
@@ -23,11 +23,9 @@ const register = async (req, res) => {
 
     // 2. Create base user
     const userData = {
+      name,
       email,
       password,
-      firstName,
-      lastName,
-      phone,
       role
     };
 
@@ -38,36 +36,15 @@ const register = async (req, res) => {
       case ROLES.STUDENT:
         user = new Student({
           ...userData,
-          department,
-          semester,
           usn,
-          section,
-          batch: new Date().getFullYear()
         });
         break;
 
       case ROLES.TEACHER:
         user = new Teacher({
           ...userData,
-          department,
+          phone,
           designation: 'Assistant Professor' // Default
-        });
-        break;
-
-      case ROLES.COORDINATOR:
-        // Verify department exists
-        const dept = await Department.findById(department);
-        if (!dept) {
-          return res.status(400).json({
-            success: false,
-            error: 'Department not found'
-          });
-        }
-        
-        user = new Coordinator({
-          ...userData,
-          department,
-          academicYear: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`
         });
         break;
 
@@ -83,12 +60,12 @@ const register = async (req, res) => {
     logger.info(`New user registered: ${user._id} (${user.role})`);
 
     // 5. Send welcome email
-    await emailService.sendWelcomeEmail(user.email, user.firstName);
+    await emailService.sendWelcomeEmail(user.email, user.name);
 
     // 6. Respond with success
     res.status(201).json({
-      success: true,
-      message: 'Registration successful. Please login.'
+      message: "Registration successful. Please login.",
+      success: true
     });
 
   } catch (error) {

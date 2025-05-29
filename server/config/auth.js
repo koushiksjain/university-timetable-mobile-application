@@ -1,6 +1,6 @@
 // config/auth.js
 const jwt = require('jsonwebtoken');
-const logger = require('../utils/logger');
+const {logger} = require('../utils/logger');
 
 const authConfig = {
   // JWT Configuration

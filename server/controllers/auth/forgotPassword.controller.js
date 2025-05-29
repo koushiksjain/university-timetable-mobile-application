@@ -2,7 +2,7 @@
 const User = require('../../models/User.model');
 const jwt = require('jsonwebtoken');
 const authConfig = require('../../config/auth');
-const logger = require('../../utils/logger');
+const {logger} = require('../../utils/logger');
 const emailService = require('../../services/email.service');
 
 const forgotPassword = async (req, res) => {

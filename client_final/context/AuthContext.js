@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
             email: userData.email,
             name: userData.name || userData.email.split('@')[0],
             role: userData.role || determineRole(userData.email),
-            token: 'mock-auth-token',
+            token: userData.token,
           };
           
           await AsyncStorage.setItem('user', JSON.stringify(mockUser));

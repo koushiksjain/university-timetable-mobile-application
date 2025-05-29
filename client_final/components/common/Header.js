@@ -36,7 +36,7 @@ const Header = ({ title, onBack, rightIcon, onRightPress, scrollY }) => {
       <View style={styles.content}>
         {onBack && (
           <TouchableOpacity onPress={onBack} style={styles.icon}>
-            <Ionicons name="arrow-back" size={24} color={theme.colors.onPrimary} />
+            <Ionicons name="arrow-back" size={24} color={theme.colors.Primary} />
           </TouchableOpacity>
         )}
         
@@ -55,7 +55,7 @@ const Header = ({ title, onBack, rightIcon, onRightPress, scrollY }) => {
         
         {rightIcon && (
           <TouchableOpacity onPress={onRightPress} style={styles.icon}>
-            <Ionicons name={rightIcon} size={24} color={theme.colors.onPrimary} />
+            <Ionicons name={rightIcon} size={24} color={theme.colors.Primary} />
           </TouchableOpacity>
         )}
       </View>

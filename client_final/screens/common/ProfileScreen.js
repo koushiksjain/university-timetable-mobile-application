@@ -16,7 +16,7 @@ const ProfileScreen = ({ navigation }) => {
   const [user, setUser] = useState({
     name: 'Alex Johnson',
     email: 'alex.johnson@university.edu',
-    department: 'Computer Science',
+    department: 'Artificial Intelligence and Machine Learning',
     role: 'Teacher', // Changed role to Teacher
     phone: '+1 (555) 123-4567',
     bio: 'Passionate educator with a focus on AI and Machine Learning',
@@ -224,13 +224,13 @@ const ProfileScreen = ({ navigation }) => {
               <View style={styles.infoRow}>
                 <View style={styles.infoIconContainer}>
                   <MaterialCommunityIcons 
-                    name="phone" 
+                    name="account" 
                     size={20} 
                     color={theme.colors.primary} 
                   />
                 </View>
                 <Text style={styles.infoText}>
-                  {user.phone}
+                  {user.role}
                 </Text>
               </View>
             </Card>
